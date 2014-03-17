@@ -4,17 +4,21 @@
 @char_spacing: 0.3;
 @line_spacing: 0.5;
 @text_distance: 15;
-@place_scale: 1.2;
 @wrap_width: 50;
-@text_step: 1.2;
+
+
+// typegraphic scale: 5 7 8 9 10 11 12 14 16 18 21 24 36 48 60 72
+
+@place_scale: 1.2;
+@place_step: 1.2;
 
 @ps0: 8.0 *  @place_scale;
-@ps1: @ps0 * @text_step;
-@ps2: @ps1 * @text_step;
-@ps3: @ps2 * @text_step;
-@ps4: @ps3 * @text_step;
-@ps5: @ps4 * @text_step;
-@ps6: @ps5 * @text_step;
+@ps1: @ps0 * @place_step;
+@ps2: @ps1 * @place_step;
+@ps3: @ps2 * @place_step;
+@ps4: @ps3 * @place_step;
+@ps5: @ps4 * @place_step;
+@ps6: @ps5 * @place_step;
 
 @ls_2a:  @ps0;
 @ls_3a:  @ps0;
@@ -136,6 +140,6 @@ Map { font-directory: url("fonts"); }
 @road_halo:         white;
 
 @label: black;
-@label_light: mix( @label, @land, 80% );
-@label_dim: mix( @label, @land, 90% );
+@label_mid: mix( @label, @land, 80% );
+@label_light: mix( @label, @land, 60% );
 @label_halo_place_fill: lighten( @land, 5% );

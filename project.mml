@@ -8,7 +8,7 @@
   "center": [
     12.5,
     55.67,
-    13
+    15
   ],
   "format": "png",
   "interactivity": false,
@@ -18,22 +18,11 @@
   "Stylesheet": [
     "carto/settings.mss",
     "carto/base.mss",
-    "carto/areas.mss",
-    "carto/waterways.mss",
-    "carto/ferries.mss",
-    "carto/railways.mss",
-    "carto/buildings.mss",
-    "carto/routes.mss",
-    "carto/roads.mss",
-    "carto/cobblestones.mss",
-    "carto/markers.mss",
     "carto/labels_base.mss",
     "carto/stations.mss",
     "carto/labels_areas.mss",
     "carto/labels_places.mss",
-    "carto/labels_poi.mss",
-    "carto/labels_waterways.mss",
-    "carto/labels_roads.mss"
+    "carto/labels_poi.mss"
   ],
   "Layer": [
     {
@@ -392,7 +381,7 @@
     {
       "Datasource": {
         "dbname": "osm",
-        "table": "(SELECT way,placegroup,name,place,population,\"natural\" FROM planet_osm_point WHERE placegroup IS NOT NULL AND name IS NOT NULL ORDER BY placegroup ASC, population DESC NULLS LAST) AS data",
+        "table": "(SELECT way,placegroup,name,place,\"natural\" FROM planet_osm_point WHERE placegroup IS NOT NULL AND name IS NOT NULL ORDER BY placegroup ASC, population DESC NULLS LAST) AS data",
         "type": "postgis",
         "user": "osm"
       },

@@ -83,6 +83,14 @@ function in_set(v,values)
   return false
 end
 
+function lookup(v,values)
+  if tag and tag ~= "" then
+    return values[v]
+	else
+		return nil
+	end
+end
+
 function sizegroup(tag)
 	rank = {
 		['motorway'] = 0,
@@ -257,29 +265,64 @@ function placegroup(tags)
       elseif population>=0 and population<100 then
         return 8
       end
-    else
-      place = tags['place']
-      if place=='country' then
+    elseif tags['place']
+      v = tags['place']
+      if v=='country' then
         return 0
       elseif false then
         return 1
-      elseif place=='city' or tags['natural']=='wood' then
+      elseif v=='city' then
         return 2
       elseif false then
         return 3
-      elseif place=='town' then
+      elseif v=='town' then
         return 4
-      elseif place=='suburb' or place=='locality' then
+      elseif v=='suburb' or v=='locality' then
         return 5
-      elseif place=='neighbourhood' then
+      elseif v=='neighbourhood' then
         return 6
-      elseif place=='village' then
+      elseif v=='village' then
         return 7
-      elseif place=='hamlet' then
+      elseif v=='hamlet' then
         return 8
       end
+    elseif tags['natural']
+      -- some of these are usually tagged on areas, but can occur on nodes
+      rank = {
+    		-- vegetaion
+        ['wood'] = 5,
+        ['wetland'] = 5,
+        ['heath'] = 5,
+    		['fell'] = 8,
+        ['mud'] = 8,
+        ['sand'] = 8,
+        ['scrub'] = 8,
+        ['stone'] = 9,
+        ['tree'] = 9,
+        
+    		-- water
+    		['bay'] = 3,
+        ['beach'] = 4,
+        ['water'] = 6,
+        ['spring'] = 8,
+        
+        -- mountain
+        ['volcano'] = 3,
+        ['glacier'] = 3,
+        ['peak'] = 4,
+        ['saddle'] = 4,
+        ['cliff'] = 7,
+        ['sinkhole'] = 7,
+        ['scree'] = 8,
+        ['rock'] = 8,
+        ['cave_entrance'] = 8
+      }
+    	return rank[tags['natural']]
+    elseif tags['historic']
+      return 4
+    elseif tags['leisure']
+      return 4
     end
-
   else
     return nil
   end
