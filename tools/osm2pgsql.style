@@ -229,7 +229,8 @@ node,way    it:fvg:*                text    delete
 # custom tags
 node,way 	modegroup       text         linear
 node,way    sizegroup       int4         linear
-node   		placegroup      int4         linear
+node   		placegroup      text         linear
+node   		placerank      int4         linear
 
 way 		cycleway			text		linear
 way 		cycleway:left		text		linear

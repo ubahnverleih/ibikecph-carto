@@ -242,90 +242,145 @@ function modegroup(tags)
 	return nil
 end
 
-function placegroup(tags)
-  if tags['place'] then
-    if tags['population'] then
-      population = tonumber(tags['population'])
-      if     population>=1638400 then
-        return 0
-      elseif population>=409600 and population<1638400 then
-        return 1
-      elseif population>=102400 and population<409600 then
-        return 2
-      elseif population>=25600 and population<102400 then
-        return 3
-      elseif population>=6400 and population<25600 then
-        return 4
-      elseif population>=1600 and population<6400 then
-        return 5
-      elseif population>=400 and population<1600 then
-        return 6
-      elseif population>=100 and population<400 then
-        return 7
-      elseif population>=0 and population<100 then
-        return 8
-      end
-    elseif tags['place']
-      v = tags['place']
-      if v=='country' then
-        return 0
-      elseif false then
-        return 1
-      elseif v=='city' then
-        return 2
-      elseif false then
-        return 3
-      elseif v=='town' then
-        return 4
-      elseif v=='suburb' or v=='locality' then
-        return 5
-      elseif v=='neighbourhood' then
-        return 6
-      elseif v=='village' then
-        return 7
-      elseif v=='hamlet' then
-        return 8
-      end
-    elseif tags['natural']
-      -- some of these are usually tagged on areas, but can occur on nodes
-      rank = {
-    		-- vegetaion
-        ['wood'] = 5,
-        ['wetland'] = 5,
-        ['heath'] = 5,
-    		['fell'] = 8,
-        ['mud'] = 8,
-        ['sand'] = 8,
-        ['scrub'] = 8,
-        ['stone'] = 9,
-        ['tree'] = 9,
-        
-    		-- water
-    		['bay'] = 3,
-        ['beach'] = 4,
-        ['water'] = 6,
-        ['spring'] = 8,
-        
-        -- mountain
-        ['volcano'] = 3,
-        ['glacier'] = 3,
-        ['peak'] = 4,
-        ['saddle'] = 4,
-        ['cliff'] = 7,
-        ['sinkhole'] = 7,
-        ['scree'] = 8,
-        ['rock'] = 8,
-        ['cave_entrance'] = 8
-      }
-    	return rank[tags['natural']]
-    elseif tags['historic']
+function population_rank(tags)
+  if tags['population'] then
+    population = tonumber(tags['population'])
+    if     population>=1638400 then
+      return 0
+    elseif population>=409600 and population<1638400 then
+      return 1
+    elseif population>=102400 and population<409600 then
+      return 2
+    elseif population>=25600 and population<102400 then
+      return 3
+    elseif population>=6400 and population<25600 then
       return 4
-    elseif tags['leisure']
-      return 4
+    elseif population>=1600 and population<6400 then
+      return 5
+    elseif population>=400 and population<1600 then
+      return 6
+    elseif population>=100 and population<400 then
+      return 7
+    elseif population>=0 and population<100 then
+      return 8
     end
-  else
-    return nil
   end
+  return nil
+end
+
+function place(tags)
+  -- places
+  r = {
+--      ['continent'] = 0,
+    ['country'] = 0,
+--      ['state'] = 1,
+--      ['region'] = 1,
+--      ['province'] = 1,
+--      ['district'] = 1,
+--      ['county'] = 1,
+--      ['municipality'] = 1,
+    ['city'] = 2,
+    ['town'] = 4,
+		['suburb'] = 5,
+    ['quarter'] = 6,
+    ['neighbourhood'] = 6,
+    ['village'] = 7,
+    ['hamlet'] = 8,
+    ['locality'] = 8,
+    ['isolated_dwelling'] = 9,
+    ['farm'] = 9
+  }
+  rank = r[tags['place']]
+  if rank then
+    return 'place', population_rank(tags) or rank
+  end
+  
+  
+  -- islands
+  r = {
+    ['archipelago'] = 4,
+    ['island'] = 6,
+    ['islet'] = 7
+  }
+  rank = r[tags['place']]
+  if rank then
+    return 'natural', rank
+  end
+  
+  
+  -- natural
+  r = {
+    ['wood'] = 5,
+    ['wetland'] = 5,
+    ['heath'] = 5,
+		['fell'] = 8,
+    ['mud'] = 8,
+    ['sand'] = 8,
+    ['scrub'] = 8,
+    ['stone'] = 8,
+    ['tree'] = 8,
+    
+		['bay'] = 3,
+    ['beach'] = 6,
+    ['water'] = 6,
+    ['spring'] = 8,
+    
+    ['volcano'] = 3,
+    ['glacier'] = 3,
+    ['peak'] = 4,
+    ['saddle'] = 4,
+    ['cliff'] = 7,
+    ['sinkhole'] = 7,
+    ['scree'] = 8,
+    ['rock'] = 8,
+    ['cave_entrance'] = 8
+  }
+  rank = r[tags['natural']]
+  if rank then
+	  return 'natural', rank
+	end
+	
+  -- poi/leisure
+  r = {
+    ['nature_reserve'] = 5,
+    ['marina'] = 6,  
+    ['park'] = 7,  
+    ['water_park'] = 7,
+    ['golf_course'] = 7,
+    ['stadium'] = 7,
+    ['pitch'] = 8,  
+    ['garden'] = 8,  
+    ['swimming_pool'] = 8,  
+--    ['sports_centre'] = 8,  
+    ['playground'] = 8
+  }
+  rank = r[tags['leisure']]
+  if rank then
+	  return 'poi', rank
+	end
+  
+  -- poi/historic
+  r = {
+--    ['battlefield'] = 6,  
+    ['archaeological_site'] = 6,
+    ['castle'] = 7,  
+    ['fort'] = 7,  
+    ['manor'] = 8,  
+    ['ruins'] = 8,
+    ['citywalls'] = 8,
+    ['city_gate'] = 8,  
+--    ['monument'] = 8,  
+    ['ship'] = 8,
+    ['wreck'] = 8,
+--    ['memorial'] = 8,  
+    ['rune_stone'] = 8
+  }
+  rank = r[tags['historic']]
+  if rank then
+	  return 'poi', rank
+	end
+  
+  return nil, nil
 end
 
 function filter_tags_node (tags, nokeys)
@@ -336,7 +391,7 @@ function filter_tags_node (tags, nokeys)
 	tags["FIXME"] = nil
 	tags["note"] = nil
 	tags["source"] = nil
-  tags['placegroup'] = placegroup(tags)
+  tags['placegroup'], tags['placerank'] = place(tags)
 
 	return 0, tags
 end
